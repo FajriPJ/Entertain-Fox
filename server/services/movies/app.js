@@ -1,5 +1,6 @@
 const express = require('express')
-const {connectMongodb, getDatabase} = require('./config/mongodb');
+const {connectMongodb} = require('./config/mongodb');
+const router = require('./routes');
 
 const app = express()
 const port = 4001
@@ -13,26 +14,13 @@ connectMongodb((connected) => {
   } 
 })
 
-app.use(express.urlencoded({extended: false}))
-app.use(express.json())
 
+app.use(express.json())
+app.use(express.urlencoded({extended: false}))
+
+app.use(router)
 app.get('/', (req, res) => {
   res.status(200).json('Hello World!!!')
-})
-
-app.get('/movies', (req,res) => {
-  getDatabase()
-    .collection('Movies')
-    .find()
-    .toArray()
-      .then(({data}) => {
-        // console.log({data});
-        res.status(200).json(data)
-        
-      })
-      .catch(err => {
-        console.log(err);
-      })
 })
 
 app.listen(port, () => {
