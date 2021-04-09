@@ -14,7 +14,6 @@ class MovieController{
   }
 
   static create(req, res) {
-    // console.log(req.body);
     let input = {
       title: req.body.title,
       overview: req.body.overview,
@@ -45,7 +44,6 @@ class MovieController{
   }
   
   static update(req, res) {
-    console.log('masuk update');
     let id = req.params.id
     let movieUpdate = {
       title: req.body.title,
@@ -54,7 +52,6 @@ class MovieController{
       popularity: req.body.popularity,
       tags: req.body.tags
     }
-    console.log(movieUpdate, '>>>>>>>>');
 
     Movie.findIdandUpdate(id, movieUpdate)
       .then(data => {
