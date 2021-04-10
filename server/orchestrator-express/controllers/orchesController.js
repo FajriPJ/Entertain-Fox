@@ -7,7 +7,7 @@ class OrchesController{
   static async readAll(req, res){
 
     try {
-      const entertainMe = await redis.get('entertainMe:data')
+      const entertainMe = await redis.get('entertainMe')
 
       if (!entertainMe) {
 
@@ -19,7 +19,7 @@ class OrchesController{
             const movie = data[0].data
             const series = data[1].data
 
-            redis.set('entertainMe:data',JSON.stringify({movie, series}))
+            redis.set('entertainMe',JSON.stringify({movie, series}))
             res.status(200).json(data)
           })  
 

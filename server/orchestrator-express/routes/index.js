@@ -1,9 +1,22 @@
 const router = require('express').Router();
 const OrchesController = require('../controllers/orchesController');
+const MoviesController = require('../controllers/moviesController');
+const TvSeriesController = require('../controllers/seriesController');
 
 
-// router.get('/', OrchesController.read)
-// router.get('/movies', OrchesController.readMovie)
-// router.get('/tvseries', OrchesController.readSeries)
+
+router.get('/entertainme', OrchesController.readAll)
+
+router.get('/movies', MoviesController.readAll )
+router.post('/movies', MoviesController.create )
+router.get('/movies/:id', MoviesController.readOne )
+router.put('/movies/:id', MoviesController.update )
+router.delete('/movies/:id', MoviesController.delete )
+
+// router.get('/tvseries', TvSeriesController.ReadAll )
+// router.get('/tvseries', TvSeriesController.create )
+// router.get('/tvseries/:id', TvSeriesController.readOne )
+// router.get('/tvseries/:id', TvSeriesController.update )
+// router.get('/tvseries/:id', TvSeriesController.delete )
 
 module.exports = router
