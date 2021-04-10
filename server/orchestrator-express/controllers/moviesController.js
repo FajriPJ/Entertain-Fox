@@ -51,6 +51,25 @@ class MoviesController{
     } catch (error) {
       res.send(error);
     }
+
+    // try {
+    //   const movieId = req.params.id;
+    //   const movies = JSON.parse(await redis.get("movies"));
+    //   if (movies) {
+    //     const movie = movies.filter((movie) => movie._id === movieId);
+    //     if (movie) {
+    //       res.status(200).json(movie);
+    //     } else {
+    //       const { data } = await axios.get(`${url}${id}`);
+    //       res.status(200).json(data);
+    //     }
+    //   } else {
+    //     const { data } = await axios.get(`${url}${id}`);
+    //     res.status(200).json(data);
+    //   }
+    // } catch (error) {
+    //   res.send(error);
+    // }
   }
   static async update(req, res) {
     try {
