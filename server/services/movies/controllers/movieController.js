@@ -74,11 +74,11 @@ class MovieController{
     //   })
 
     try {
-      const redisMovies = JSON.parse( await redis.get("movies:allData"))
+      const moviesRedis = JSON.parse( await redis.get("movies:allData"))
       let readOneMovie;
 
-      if (redisMovies) {
-        const movie = redisMovies.filter((movie) => movie._id === id)
+      if (moviesRedis) {
+        const movie = moviesRedis.filter((movie) => movie._id === id)
 
         if (movie){
           res.status(200).json(movie)
