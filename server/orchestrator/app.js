@@ -1,5 +1,7 @@
 const { ApolloServer, gql } = require('apollo-server');
-const axios = require('axios');
+const axios = require("axios");
+const Redis = require("ioredis");
+const redis = new Redis();
 
 const typeDefs = gql`
 
@@ -8,7 +10,7 @@ type Movie {
   title: String
   overview: String
   poster_path: String
-  popularity: Int
+  popularity: Float
   tags: [String]
 }
 
@@ -17,31 +19,38 @@ type TvSeries {
   title: String
   overview: String
   poster_path: String
-  popularity: Int
+  popularity: Float
   tags: [String]
 }
 
 type Query {
-  movies: Movie
+  movies: [Movie]
   tvseries: [TvSeries]
 }
-
 `;
 
 const resolvers = {
+
   Query: {
-    movies: () => {
-      return axios({
-        method: "GET",
-        url: 'http://localhost:4001/movies'
-      })
-      .then(({data}) => {
-        console.log('masuk');
-        return data
-      })
-      .catch( err => {
-        throw err
-      })
+    
+    movies: async () => {
+      try {
+        let movieRedis = await redis.get('movies')
+        if (!movieRedis) {
+
+          const { data } = await axios.get("http://localhost:4000/movies")
+
+          redis.set('movies', JSON.stringify(data))
+          console.log(data);
+          return data
+        } else {
+          console.log('masuk else');
+          console.log(movieRedis, '<<<<<<<<');
+          return JSON.parse(movieRedis)
+        }
+      } catch (error) {
+        return error
+      }
     },
   },
 

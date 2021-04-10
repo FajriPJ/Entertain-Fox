@@ -13,10 +13,10 @@ router.get('/movies/:id', MoviesController.readOne )
 router.put('/movies/:id', MoviesController.update )
 router.delete('/movies/:id', MoviesController.delete )
 
-// router.get('/tvseries', TvSeriesController.ReadAll )
-// router.get('/tvseries', TvSeriesController.create )
-// router.get('/tvseries/:id', TvSeriesController.readOne )
-// router.get('/tvseries/:id', TvSeriesController.update )
-// router.get('/tvseries/:id', TvSeriesController.delete )
+router.get('/tvseries', TvSeriesController.readAll )
+router.get('/tvseries', TvSeriesController.create )
+router.get('/tvseries/:id', TvSeriesController.readOne )
+router.get('/tvseries/:id', TvSeriesController.update )
+router.get('/tvseries/:id', TvSeriesController.delete )
 
 module.exports = router
