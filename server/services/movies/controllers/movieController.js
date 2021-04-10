@@ -78,7 +78,6 @@ class MovieController{
       let readOneMovie;
 
       if (redisMovies) {
-        console.log('asuuuu');
         const movie = redisMovies.filter((movie) => movie._id === id)
 
         if (movie){

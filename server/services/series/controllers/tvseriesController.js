@@ -1,19 +1,31 @@
 const TvSeries = require('../models/tvSeriesModel')
-
+const axios = require('axios');
+const Redis = require('ioredis');
+const redis = new Redis()
+const url = "http://localhost:4002/tvseries/"
 
 class TvSeriesController{
 
-  static read(req, res) {
-    TvSeries.readAll()
-      .then(data => {
-        res.status(200).json(data)
-      })
-      .catch(err => {
-        res.status(500).json({message: "internal server error"})
-      })  
+  static async read(req, res) {
+     
+    try {
+      const series = JSON.parse(await redis.get('tvseries:alldata'))
+
+      if (!series) {
+
+        const readAllSeries = await TvSeries.readAll()
+        redis.set('tvseries:alldata', JSON.stringify(readAllSeries))
+        res.status(200).json(readAllSeries)
+
+      } else {
+        res.status(200).json(series)
+      }
+    } catch (error) {
+      res.status(500).json(error)
+    }
   }
 
-  static create(req, res) {
+  static async create(req, res) {
 
     let input = {
       title: req.body.title,
@@ -22,29 +34,46 @@ class TvSeriesController{
       popularity: req.body.popularity,
       tags: req.body.tags
     }
-    TvSeries.create(input) 
-      .then(data => {
-        res.status(201).json(data.ops[0])
-      })
-      .catch(err => {
-        res.status(500).json({message: "internal server error"})
-      })
+    try {
+      await redis.del('tvseries:alldata')
+      const newSeries = await TvSeries.create(input)
+      res.status(201).json(newSeries.ops[0]);
+
+    } catch (error) {
+      res.status(500).json(error)
+    }
   }
 
-  static readOne(req, res) {
-    console.log('masuuk readOne');
+  static async readOne(req, res) {
+
     let id = req.params.id
-    TvSeries.readById(id)
-      .then(data => {
-        console.log(data);
-        res.status(200).json(data)
-      })
-      .catch(err => {
-        res.status(500).json({message: "internal server error"})
-      })
+
+    try {
+      const redisSeries = JSON.parse( await redis.get("tvseries:allData"))
+      let readOneSeries;
+
+      if (redisSeries) {
+        const series = redisSeries.filter((seri) => seri._id === id)
+
+        if (series){
+          res.status(200).json(series)
+        } else {
+          readOneSeries = await TvSeries.readById(id)
+          res.status(200).json(readOneSeries)
+        }
+
+      } else {
+        readOneSeries = await TvSeries.readById(id)
+        res.status(200).json(readOneSeries)
+      }
+
+    } catch (error) {
+      res.status(500).json(error)
+      
+    }
   }
-  
-  static update(req, res) {
+   
+  static async update(req, res) {
     let id = req.params.id
     let tvSeriesUpdate = {
       title: req.body.title,
@@ -54,27 +83,27 @@ class TvSeriesController{
       tags: req.body.tags
     }
 
-    TvSeries.findIdandUpdate(id, tvSeriesUpdate)
-      .then(data => {
-        console.log('berhasil update');
-        // res.status(201).json(data)
-        res.status(201).json({message: "data updated"})
-
-      })
-      .catch(err => {
-        res.status(500).json({message: "internal server error"})
-      })
+    try {
+      await redis.del("tvseries:allData")
+      TvSeries.findIdandUpdate(id, tvSeriesUpdate)
+      res.status(201).json({ message: "data updated"})
+      
+    } catch (error) {
+      res.status(500).json(error)
+    }
   }
 
-  static delete(req, res) {
+  static async delete(req, res) {
     let id = req.params.id
-    TvSeries.delete(id)
-      .then(data => {
-        res.status(200).json({message: 'data deleted'})
-      })
-      .catch(err => {
-        res.status(500).json({message: "internal server error"})
-      })
+
+    try {
+      await redis.del("tvseries:allData")
+      TvSeries.delete(id)
+      res.status(200).json({message: 'data deleted'})
+      
+    } catch (error) {
+      res.status(500).json(error)
+    }
   }
 }
 

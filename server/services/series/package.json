@@ -12,6 +12,8 @@
   "dependencies": {
     "axios": "^0.21.1",
     "express": "^4.17.1",
-    "mongodb": "^3.6.6"
+    "ioredis": "^4.26.0",
+    "mongodb": "^3.6.6",
+    "redis": "^3.1.0"
   }
 }
