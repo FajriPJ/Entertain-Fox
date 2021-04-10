@@ -66,12 +66,12 @@ const resolvers = {
     movie: async (_, args) => {
       const {_id} = args
       try {
-        let movieOneRedis = await redis.get('movies:onedata')
+        let movieOneRedis = await redis.get(`movies:onedata${_id}`)
         if (!movieOneRedis) {
 
           const { data } = await axios.get(`${movieURL}${_id}`)
 
-          redis.set('movies:onedata', JSON.stringify(data))
+          redis.set(`movies:onedata${_id}`, JSON.stringify(data))
           return data
         } else {
           return JSON.parse(movieOneRedis)
@@ -94,7 +94,6 @@ const resolvers = {
         }
 
         redis.del("movies:alldata")
-        redis.del("movies:onedata")
         const { data } = await axios.post(movieURL, {...newMovie});
         return data
 
@@ -115,7 +114,7 @@ const resolvers = {
       try {
         const { data } = await axios.put(`${movieURL}${_id}`, {...updateMovie})
         redis.del("movies:alldata")
-        redis.del("movies:onedata")        
+        redis.del(`movies:onedata${_id}`)        
         return data
       } catch (error) {
         return error
@@ -127,7 +126,7 @@ const resolvers = {
         const {_id} = args
         const {data} = await axios.delete(`${movieURL}${_id}`)
         redis.del("movies:alldata")
-        redis.del("movies:onedata")
+        redis.del(`movies:onedata${_id}`)
         return data
       } catch (error) {
 
