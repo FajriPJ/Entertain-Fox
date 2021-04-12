@@ -1,9 +1,10 @@
 import React from 'react'
 
-export default function Movies() {
+export default function EditMovie() {
   return (
     <div>
-      ini movies
+      ini halaman edit
     </div>
   )
 }
+

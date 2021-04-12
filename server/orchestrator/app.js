@@ -67,7 +67,7 @@ const typeDefs = gql`
   }
 `;
 
-const resolvers = {
+const resolvers = {  
 
   Query: {
     
