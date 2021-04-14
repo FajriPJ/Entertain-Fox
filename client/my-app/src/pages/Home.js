@@ -4,39 +4,18 @@ import Swal from 'sweetalert2'
 import { useQuery, gql, useMutation } from '@apollo/client'
 import { useHistory } from 'react-router-dom'
 import { favoritesVar } from '../config/vars'
+import { GET_ALLDATA, REMOVE_MOVIE } from '../queries'
 
-const GET_ALLDATA = gql`
-  query GetMovies {
-    movies {
-      _id
-      title
-      overview
-      poster_path
-      popularity
-      tags
-    },
 
-    series {
-      _id
-      title
-      overview
-      poster_path
-      popularity
-      tags
-    },
-  }
-`
-
-const REMOVE_MOVIE = gql`
-  mutation removeMovie($movieId: ID) {
-    deleteMovie( _id: $movieId){
-      message
-    }
-  }
-`
+// const REMOVE_MOVIE = gql`
+//   mutation removeMovie($movieId: ID) {
+//     deleteMovie( _id: $movieId){
+//       message
+//     }
+//   }
+// `
 
 export default function Home() {
-
   
   const history = useHistory()
 
@@ -98,25 +77,43 @@ export default function Home() {
   }
 
   return (
-    <div className="mx-3 mt-3"> 
+    <div className="mx-4 mt-3"> 
       <h2>Movies List</h2> 
-      <div className=" cardMovie row mt-3">
+      <div className=" cardMovie row mt-3 " >
         {
           getmovies.movies.map(movie => {
             return (
-              <div className="cardMovie col-md-2 mt-4" key={movie._id}>
-                <div className=" card h-100">
-                  <img src={movie.poster_path} className="card-img-top" />
-                    <div className="card-body">
-                      <h5 className="titleMovie card-title">{movie.title}</h5>
+              <div  
+                className=" col-md-2 mt-4" key={movie._id}>
+                <div
+                  className="moviecard card h-100 shadow" style={{borderRadius: "10px", backgroundColor: "black"}}>
+                  <img
+
+                    style={{borderRadius: "10px", backgroundColor: 'black'}}
+                    src={movie.poster_path} />
+                    <div className="overlay">
+                      <button 
+                        onClick={() => toEditPage(movie._id)}
+                        className="btn-warning btn btn-i"><i className="icon bi bi-pencil-square"></i></button>
+                      <button 
+                        onClick={() => onDelete(movie._id)}
+                        className="btn-danger btn btn-i"><i className="icon bi bi-trash-fill"></i></button>
+                      <button 
+                        onClick={() => addToFavorite(movie)}
+                        className="btn-info btn btn-i"><i className="icon bi bi-heart-fill"></i></button>
                         
-                      <h5 className="card-title"><i class="bi bi-star-fill" style={{color: "#ebd510"}}></i> {movie.popularity}</h5>
-                      <p className="card-title">Lorem ipsum dolor sit amet consectetur adipisicing elit. Sapiente ullam earum ipsa ex odio? </p>
                     </div>
-                    
-                    <button className="btn-warning btn" onClick={() => toEditPage(movie._id)}><i className="bi bi-pencil-square mr-3"></i>update</button>
-                    <button className="btn-danger btn mt-2" onClick={() => onDelete(movie._id)}><i className="bi bi-trash-fill mr-3"></i>delete</button>
-                    <button className="btn-info btn mt-2" onClick={() => addToFavorite(movie)}><i className="bi bi-plus-circle mr-3"></i>Add to whislist</button>
+                    <div
+                      style={{position: "relative", minHeight:"130px"}} 
+                      className="card-body">
+                      <h5 
+                        className="titleMovie card-title"
+                        >{movie.title}
+                      </h5>
+                        
+                      <h5 className="card-title" style={{position: "absolute", bottom: "10px"}}><i  class="bi bi-star-fill" style={{color: "#ebd510"}}></i> {movie.popularity}</h5>
+                      {/* <p className="card-title">{movie.overview}</p> */}
+                    </div>
                 </div>
               </div>
             )

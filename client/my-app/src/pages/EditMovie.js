@@ -1,27 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import {useQuery, gql, useMutation} from '@apollo/client'
 import { useParams, useHistory } from 'react-router-dom'
+import { GET_ONEDATA, UPDATE_MOVIE } from '../queries'
 
-const GET_ONEDATA = gql`
-  query getMovie($movieId: ID!) {
-    movie(_id: $movieId) {
-      _id
-      title
-      overview
-      poster_path
-      popularity
-      tags
-    }
-  }
-`
-
-const UPDATE_MOVIE = gql`
-mutation UpdateMovie($updatemutation: MovieInput) {
-  updateMovie(updateMovie: $updatemutation){
-    message
-  }
-}
-`
 
 export default function EditMovie() {
   const history = useHistory()

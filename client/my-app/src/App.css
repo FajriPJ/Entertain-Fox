@@ -1,13 +1,28 @@
-.App {
+/* .App {
   text-align: center;
   background-color: #202120;
   color: white;
+} */
+* {
+  background-color: #202020;
+  color: whitesmoke;
 }
+
 .logo {
   text-decoration: none;
-  color: #202120;
-  font-size: 50px;
+  color: white;
+  font-size: 30px;
 
+}
+
+.icon {
+  background-color: transparent;
+  color: black;
+}
+
+span, a {
+  color: white;
+  text-decoration: none !important;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -16,10 +31,24 @@
   }
 }
 
-.titleMovie {
-  /* font-weight: bold; */
-}
-
 .cardMovie {
   border-radius: 20px;
+  color: #202020;
+}
+
+.overlay {
+  display: inline-block;
+  opacity: 100%;
+  position: absolute;
+  top: 5%;
+  margin-left: 78%;
+  margin-bottom: 100px;
+  border-radius: 50%;
+  background-color: transparent;
+}
+
+.btn-i {
+  margin-bottom: 5px;
+  border-radius: 50%;
+  
 }

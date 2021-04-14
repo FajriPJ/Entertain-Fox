@@ -4,13 +4,18 @@ import { favoritesVar } from '../config/vars'
 
 export default function Favorites() {
   const favorites = useReactiveVar(favoritesVar)
-  console.log(favorites );
-  return (
-    // <div>
-    //   <p>{JSON.stringify(favorites)}</p>
+  console.log(favorites);
 
-    //   ini halaman favorite
-    // </div>
+  if ( !favorites.length ) {
+    return (
+      <div class="card">
+        <div class="card-body">
+          <h1>Belum memasukkan favorite</h1>
+        </div>
+      </div>
+    )
+  }
+  return (
     <div>
     {
       favorites.map(fav => {

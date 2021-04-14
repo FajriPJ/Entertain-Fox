@@ -19,37 +19,32 @@ function App() {
       <div>
         <nav className="navbar navbar-expand-lg ">
           <div className="container-fluid">
-              <span className="logo">
-
-                <Link to='/'  className=" m-2"> 
+              <Link to='/'  className=" m-2"> 
+                <span className="logo">
                   EntertainMe
-                </Link>
-              </span>
+                </span>
+              </Link>
             <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
               <span className="navbar-toggler-icon"></span>
             </button>
             <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
               <div className="navbar-nav mx-3">
-                {/* <Link to='/'  className="m-2"> 
-                Home
-                </Link> */}
                 <Link to='/AddMovie' className="m-2"> 
-                  Add Movie
+                  <span>
+                    Add Movie
+                  </span>
                 </Link>
                 <Link to='/Favorite' className="m-2"> 
-                  Favorite
+                  <span>
+                    Favorite
+                  </span>
                 </Link>
               </div>
             </div>
           </div>
         </nav>
   
-        {/* A <Switch> looks through its children <Route>s and
-            renders the first one that matches the current URL. */}
         <Switch>
-          {/* <Route path="/MovieDetail/:id">
-            <MovieDetail />
-          </Route> */}
           <Route path="/EditMovie/:id">
             <EditMovie />
           </Route>

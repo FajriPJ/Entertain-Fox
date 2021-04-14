@@ -1,19 +1,9 @@
 import React, {useState} from 'react'
 import { useMutation, gql } from '@apollo/client'
 import {useHistory} from 'react-router-dom'
+import {ADD_MOVIE, GET_ALLDATA} from '../queries'
+import Swal from 'sweetalert2'
 
-const ADD_MOVIE = gql`
-  mutation AddMovie($newMoviemutation: MovieInput) {
-    createMovie(newMovie: $newMoviemutation){
-      _id
-      title
-      overview
-      poster_path
-      popularity
-      tags
-    }
-  }
-`
 
 export default function AddMovie() {
 
@@ -27,7 +17,11 @@ export default function AddMovie() {
     tags: [],
   }) 
 
-  const [addMovieSubmit, {data: addNewMovie, loading: addLoading, error: addError}] = useMutation(ADD_MOVIE)
+  const [addMovieSubmit, {data: addNewMovie, loading: addLoading, error: addError}] = useMutation(ADD_MOVIE, {
+    refetchQueries: [
+      {query: GET_ALLDATA}
+    ]
+  })
 
   const changeData = (e) => {
     setNewMovie({
@@ -38,6 +32,21 @@ export default function AddMovie() {
 
   const onSubmit = (e) => {
     e.preventDefault()
+    const Toast = Swal.mixin({
+      toast: true,
+      position: 'top-end',
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.addEventListener('mouseenter', Swal.stopTimer)
+        toast.addEventListener('mouseleave', Swal.resumeTimer)
+      }
+    })
+    Toast.fire({
+      icon: 'success',
+      title: 'adding movie success'
+    })
     addMovieSubmit({ 
       variables: {
         newMoviemutation: {
