@@ -1,5 +1,4 @@
 const TvSeries = require('../models/tvSeriesModel')
-const axios = require('axios');
 const Redis = require('ioredis');
 const redis = new Redis()
 const url = "http://localhost:4002/tvseries/"
@@ -10,11 +9,13 @@ class TvSeriesController{
      
     try {
       const series = JSON.parse(await redis.get('tvseries:alldata'))
+      console.log(series, '================');
 
       if (!series) {
 
         const readAllSeries = await TvSeries.readAll()
         redis.set('tvseries:alldata', JSON.stringify(readAllSeries))
+
         res.status(200).json(readAllSeries)
 
       } else {
@@ -84,9 +85,9 @@ class TvSeriesController{
     }
 
     try {
-      await redis.del("tvseries:allData")
+      await redis.del('tvseries:alldata')
       TvSeries.findIdandUpdate(id, tvSeriesUpdate)
-      res.status(201).json({ message: "data updated"})
+      res.status(201).json({ message: "data updated", data:tvSeriesUpdate })
       
     } catch (error) {
       res.status(500).json(error)
@@ -97,8 +98,8 @@ class TvSeriesController{
     let id = req.params.id
 
     try {
-      await redis.del("tvseries:allData")
       TvSeries.delete(id)
+      await redis.del('tvseries:alldata')
       res.status(200).json({message: 'data deleted'})
       
     } catch (error) {

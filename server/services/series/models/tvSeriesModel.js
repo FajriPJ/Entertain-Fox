@@ -26,7 +26,7 @@ class TvSeries {
   static findIdandUpdate(id, input) {
     return getDatabase()
       .collection('TvSeries')
-      .updateOne({id: ObjectId(id)}, {$set: input})
+      .updateOne({_id: ObjectId(id)}, {$set: input})
   }
 
   static delete (id) {

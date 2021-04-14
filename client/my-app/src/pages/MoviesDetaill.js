@@ -15,6 +15,7 @@ const GET_ONEMOVIE= gql`
 `
 export default function Movies() {
 
+
   // const {data, loading, error} = useQuery(GET_ONEMOVIE, {
   //   variables: {
   //     movieId: movieId,

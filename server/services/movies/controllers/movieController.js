@@ -18,7 +18,7 @@ class MovieController{
 
     try {
       const movies = JSON.parse(await redis.get('movies:alldata'))
-
+      console.log(movies, '===============');
       if (!movies) {
 
         const readAllMovie = await Movie.readAll()

@@ -1,10 +1,10 @@
 import React, {useState} from 'react'
 import { useMutation, gql } from '@apollo/client'
-
+import {useHistory} from 'react-router-dom'
 
 const ADD_MOVIE = gql`
-  mutation AddMovie($newTitle: title, $newOverview:  overview, $newPoster_path: poster_path, $newPopularity: popularity, $newTags: tags){
-    createMovie(title: $newTitle, overview: $newOverview, poster_path: $newPoster_path, popularity: $newPopularity, tags: $newTags) {
+  mutation AddMovie($newMoviemutation: MovieInput) {
+    createMovie(newMovie: $newMoviemutation){
       _id
       title
       overview
@@ -17,19 +17,17 @@ const ADD_MOVIE = gql`
 
 export default function AddMovie() {
 
-  
+  const history = useHistory()
+
   const [newMovie, setNewMovie] = useState({
     title: "",
     overview: "",
-    poster: "",
-    popularity: 0,
+    poster_path: "",
+    popularity: "",
     tags: [],
   }) 
 
   const [addMovieSubmit, {data: addNewMovie, loading: addLoading, error: addError}] = useMutation(ADD_MOVIE)
-  // console.log(addNewMovie, '<<<<<<<<<<<,');
-  // console.log(addLoading, '<<<<<<<<<<<,');
-  // console.log(ADD_MOVIE, '====================');
 
   const changeData = (e) => {
     setNewMovie({
@@ -40,22 +38,33 @@ export default function AddMovie() {
 
   const onSubmit = (e) => {
     e.preventDefault()
- 
     addMovieSubmit({ 
       variables: {
-        newTitle: newMovie.title,
-        newOverview: newMovie.overview,
-        newPoster_path: newMovie.poster,
-        newPopularity: Number(newMovie.popularity),
-        newTags: newMovie.tags,
+        newMoviemutation: {
+          ...newMovie, 
+          popularity: parseFloat(newMovie.popularity)
+
+        }
       }
     })
-    console.log(newMovie);
+    history.push('/')
+  }
+
+  if (addLoading) {
+    return (
+      <h2>Loading...</h2>
+    )
+  }
+  if (addError) {
+    return (
+      <h2>Loading...</h2>
+    )
   }
 
   return (
     <div className="container">
-      <div className="card mt-3 mb-5" style={{backgroundColor: "#202120"}}>
+      <h2>Add Movie</h2>
+      <div className="card mt-3 mb-5" >
         <div className="card-body">
           <form onSubmit={onSubmit} >
             <div className="mb-3">
@@ -81,9 +90,9 @@ export default function AddMovie() {
             <div className="mb-3">
               <label className="form-label">Poster</label>
               <input 
-                name='poster'
+                name='poster_path'
                 placeholder="poster"
-                value={newMovie.poster}
+                value={newMovie.poster_path}
                 onChange={changeData}
 
                 className="form-control" />
@@ -115,5 +124,3 @@ export default function AddMovie() {
     </div>
   )
 }
-
-// onSubmit={(e) => handleSubmit(e)}

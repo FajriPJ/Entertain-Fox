@@ -21,6 +21,7 @@ const typeDefs = gql`
   }
 
   input MovieInput {
+    _id: ID
     title: String
     overview: String
     poster_path: String
@@ -42,6 +43,7 @@ const typeDefs = gql`
   }
 
   input SeriesInput {
+    _id: ID
     title: String
     overview: String
     poster_path: String
@@ -57,12 +59,14 @@ const typeDefs = gql`
   }
 
   type Mutation {
-    createMovie(title: String, overview: String, poster_path: String, popularity: Float, tags: [String]) : Movie
-    updateMovie(_id: ID, title: String, overview: String, poster_path: String, popularity: Float, tags: [String]) : MovieMessage
+    
+    createMovie(newMovie: MovieInput ) : Movie
+    updateMovie(updateMovie: MovieInput) : MovieMessage
     deleteMovie(_id: ID): MovieMessage
 
-    createSeries(title: String, overview: String, poster_path: String, popularity: Float, tags: [String]) : Series
-    updateSeries(_id: ID, title: String, overview: String, poster_path: String, popularity: Float, tags: [String]) : SeriesMessage
+    createSeries(newSeries: SeriesInput) : Series
+    updateSeries(updateSeries: SeriesInput) : SeriesMessage
+
     deleteSeries(_id: ID): SeriesMessage
   }
 `;
@@ -88,10 +92,30 @@ const resolvers = {
       }
     },
 
+    series: async () => {
+      try {
+        let seriesRedis = await redis.get('series:alldata')
+        if (!seriesRedis) {
+
+          const { data } = await axios.get(seriesURL)
+          redis.set('series:alldata', JSON.stringify(data))
+          return data
+        } else {
+          return JSON.parse(seriesRedis)
+        }
+      } catch (error) {
+        return error
+      }
+    },
+
     movie: async (_, args) => {
+      console.log('masuk movie get one');
       const {_id} = args
+      console.log(_id, 'id, ===');
       try {
         let movieOneRedis = await redis.get(`movies:onedata${_id}`)
+
+        
         if (!movieOneRedis) {
 
           const { data } = await axios.get(`${movieURL}${_id}`)
@@ -102,26 +126,11 @@ const resolvers = {
           return JSON.parse(movieOneRedis)
         }
       } catch (error) {
-        console.log(error, '========');
+        return error
       }
     }, 
 
-    series: async () => {
-      try {
-        let seriesRedis = await redis.get('series:alldata')
-        if (!seriesRedis) {
-
-          const { data } = await axios.get(seriesURL)
-
-          redis.set('series:alldata', JSON.stringify(data))
-          return data
-        } else {
-          return JSON.parse(seriesRedis)
-        }
-      } catch (error) {
-        return error
-      }
-    },
+    
 
     seri: async (_, args) => {
       const {_id} = args
@@ -147,11 +156,11 @@ const resolvers = {
     createMovie: async (_, args) => {
       try {
         const newMovie = {
-          title: args.title,
-          overview: args.overview,
-          poster_path: args.poster_path,
-          popularity: args.popularity,
-          tags: args.tags,
+          title: args.newMovie.title,
+          overview: args.newMovie.overview,
+          poster_path: args.newMovie.poster_path,
+          popularity: args.newMovie.popularity,
+          tags: args.newMovie.tags,
         }
 
         redis.del("movies:alldata")
@@ -159,20 +168,22 @@ const resolvers = {
         return data
 
       } catch (error) {
+        console.log();
         return error
       }
-    },
+    }, 
 
     createSeries: async (_, args) => {
       try {
         const newSeries = {
-          title: args.title,
-          overview: args.overview,
-          poster_path: args.poster_path,
-          popularity: args.popularity,
-          tags: args.tags,
+          title: args.newSeries.title,
+          overview: args.newSeries.overview,
+          poster_path: args.newSeries.poster_path,
+          popularity: args.newSeries.popularity,
+          tags: args.newSeries.tags,
         }
         redis.del("series:alldata")
+        
         const { data } = await axios.post(seriesURL, {...newSeries});
         return data
       } catch (error) {
@@ -181,18 +192,18 @@ const resolvers = {
     },
 
     updateMovie: async(_, args) => {
-      const {_id} = args
       const updateMovie = {
-        title: args.title,
-        overview: args.overview,
-        poster_path: args.poster_path,
-        popularity: args.popularity,
-        tags: args.tags,
+        _id: args.updateMovie._id,
+        title: args.updateMovie.title,
+        overview: args.updateMovie.overview,
+        poster_path: args.updateMovie.poster_path,
+        popularity: args.updateMovie.popularity,
+        tags: args.updateMovie.tags,
       }
       try {
-        const { data } = await axios.put(`${movieURL}${_id}`, {...updateMovie})
+        const { data } = await axios.put(`${movieURL}${updateMovie._id}`, {...updateMovie})
         redis.del("movies:alldata")
-        redis.del(`movies:onedata${_id}`)        
+        redis.del(`movies:onedata${updateMovie._id}`)        
         return data
       } catch (error) {
         return error
@@ -200,18 +211,19 @@ const resolvers = {
     },
 
     updateSeries: async(_, args) => {
-      const {_id} = args
       const updateSeries = {
-        title: args.title,
-        overview: args.overview,
-        poster_path: args.poster_path,
-        popularity: args.popularity,
-        tags: args.tags,
+        _id: args.updateSeries._id,
+        title: args.updateSeries.title,
+        overview: args.updateSeries.overview,
+        poster_path: args.updateSeries.poster_path,
+        popularity: args.updateSeries.popularity,
+        tags: args.updateSeries.tags,
       }
       try {
-        const { data } = await axios.put(`${seriesURL}${_id}`, {...updateSeries})
-        redis.del("movies:alldata")
-        redis.del(`movies:onedata${_id}`)        
+        const { data } = await axios.put(`${seriesURL}${updateSeries._id}`, {...updateSeries})
+        redis.del("series:alldata")
+        redis.del(`series:onedata${updateSeries._id}`)        
+        // console.log(asdasd, '=============');
         return data
       } catch (error) {
         return error

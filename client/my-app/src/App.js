@@ -8,7 +8,6 @@ import {
 } from 'react-router-dom'
 import Home from './pages/Home'
 import Series from './pages/Series'
-import MovieDetail from './pages/MoviesDetaill'
 import AddMovie from './pages/AddMovie'
 import EditMovie from './pages/EditMovie'
 import Favorite from './pages/Favorites'
@@ -20,9 +19,12 @@ function App() {
       <div>
         <nav className="navbar navbar-expand-lg ">
           <div className="container-fluid">
-              <Link to='/'  className="m-2"> 
-                EntertainMe
-              </Link>
+              <span className="logo">
+
+                <Link to='/'  className=" m-2"> 
+                  EntertainMe
+                </Link>
+              </span>
             <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
               <span className="navbar-toggler-icon"></span>
             </button>
@@ -31,15 +33,12 @@ function App() {
                 {/* <Link to='/'  className="m-2"> 
                 Home
                 </Link> */}
-                <Link to='/Series' className="m-2"> 
-                TV Series
+                <Link to='/AddMovie' className="m-2"> 
+                  Add Movie
                 </Link>
                 <Link to='/Favorite' className="m-2"> 
-                Favorite
+                  Favorite
                 </Link>
-                {/* <Link to='/Movies' className="m-2"> 
-                Movies
-                </Link> */}
               </div>
             </div>
           </div>
@@ -48,17 +47,17 @@ function App() {
         {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
         <Switch>
-          <Route path="/MovieDetail/:id">
+          {/* <Route path="/MovieDetail/:id">
             <MovieDetail />
-          </Route>
-          <Route path="/Series">
-            <Series />
+          </Route> */}
+          <Route path="/EditMovie/:id">
+            <EditMovie />
           </Route>
           <Route path="/AddMovie">
             <AddMovie />
           </Route>
-          <Route path="/EditMovie">
-            <AddMovie />
+          <Route path="/Series">
+            <Series />
           </Route>
           <Route path="/Favorite">
             <Favorite />
